@@ -1,0 +1,159 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720" font-family="Inter, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#52514e"/>
+    </marker>
+    <marker id="r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#e34948"/>
+    </marker>
+    <style>
+      .t{font-size:13px;fill:#0b0b0b;font-weight:600}
+      .s{font-size:10.5px;fill:#52514e}
+      .h{font-size:11px;fill:#52514e;font-weight:700;letter-spacing:.06em}
+      .src{fill:#ffffff;stroke:#c9c8c3;stroke-width:1}
+      .lay{fill:#eef4fc;stroke:#2a78d6;stroke-width:1.2}
+      .gold{fill:#fff6e0;stroke:#eda100;stroke-width:1.4}
+      .ops{fill:#f5f5f2;stroke:#c9c8c3;stroke-width:1}
+      .gate{fill:#fdecec;stroke:#e34948;stroke-width:1.2}
+      .ln{stroke:#52514e;stroke-width:1.3;fill:none}
+    </style>
+  </defs>
+  <rect width="1280" height="720" fill="#fcfcfb"/>
+  <text x="32" y="38" font-size="20" font-weight="700" fill="#0b0b0b">Collections analytics — production architecture</text>
+  <text x="32" y="58" class="s">Daily batch + incremental late-data reprocessing · every number on the dashboard traces back to a raw file</text>
+
+  <!-- SOURCES -->
+  <text x="32" y="96" class="h">SOURCE SYSTEMS</text>
+  <g>
+    <rect x="32"  y="106" width="180" height="46" rx="6" class="src"/><text x="44" y="126" class="t">Core LMS</text><text x="44" y="142" class="s">accounts · status history · DPD</text>
+    <rect x="32"  y="160" width="180" height="46" rx="6" class="src"/><text x="44" y="180" class="t">Payment gateways</text><text x="44" y="196" class="s">payments · reversals</text>
+    <rect x="32"  y="214" width="180" height="46" rx="6" class="src"/><text x="44" y="234" class="t">Dialers / telephony</text><text x="44" y="250" class="s">calls · attempts · dispositions</text>
+    <rect x="32"  y="268" width="180" height="46" rx="6" class="src"/><text x="44" y="288" class="t">WhatsApp &amp; SMS</text><text x="44" y="304" class="s">message events</text>
+    <rect x="32"  y="322" width="180" height="46" rx="6" class="src"/><text x="44" y="342" class="t">Field app</text><text x="44" y="358" class="s">visits · GPS · PTPs</text>
+    <rect x="32"  y="376" width="180" height="46" rx="6" class="src"/><text x="44" y="396" class="t">HR / workforce</text><text x="44" y="412" class="s">agents · sessions</text>
+    <rect x="32"  y="430" width="180" height="46" rx="6" class="src"/><text x="44" y="450" class="t">Campaign engine</text><text x="44" y="466" class="s">campaigns · daily targeting</text>
+  </g>
+
+  <!-- contract gate -->
+  <rect x="232" y="106" width="96" height="370" rx="6" class="gate"/>
+  <text x="280" y="270" text-anchor="middle" class="t" fill="#0b0b0b">Data</text>
+  <text x="280" y="286" text-anchor="middle" class="t">contracts</text>
+  <text x="280" y="306" text-anchor="middle" class="s">schema · PK</text>
+  <text x="280" y="320" text-anchor="middle" class="s">timezone · codes</text>
+  <text x="280" y="346" text-anchor="middle" class="s">breach →</text>
+  <text x="280" y="360" text-anchor="middle" class="s">quarantine</text>
+  <path d="M212,291 L230,291" class="ln" marker-end="url(#a)"/>
+
+  <!-- LAYERS -->
+  <text x="350" y="96" class="h">LAKEHOUSE LAYERS (S3 + Iceberg / DuckDB here)</text>
+  <g>
+    <rect x="350" y="170" width="118" height="150" rx="8" class="lay"/>
+    <text x="409" y="196" text-anchor="middle" class="t">Raw</text>
+    <text x="409" y="218" text-anchor="middle" class="s">append-only</text>
+    <text x="409" y="232" text-anchor="middle" class="s">all VARCHAR</text>
+    <text x="409" y="246" text-anchor="middle" class="s">_ingested_at</text>
+    <text x="409" y="260" text-anchor="middle" class="s">_src_row</text>
+    <text x="409" y="306" text-anchor="middle" class="s">00_raw.sql</text>
+
+    <rect x="490" y="170" width="118" height="150" rx="8" class="lay"/>
+    <text x="549" y="196" text-anchor="middle" class="t">Staging</text>
+    <text x="549" y="218" text-anchor="middle" class="s">typed columns</text>
+    <text x="549" y="232" text-anchor="middle" class="s">all clocks → IST</text>
+    <text x="549" y="246" text-anchor="middle" class="s">code mapping</text>
+    <text x="549" y="260" text-anchor="middle" class="s">ID normalisation</text>
+    <text x="549" y="306" text-anchor="middle" class="s">10_staging.sql</text>
+
+    <rect x="630" y="170" width="118" height="150" rx="8" class="lay"/>
+    <text x="689" y="196" text-anchor="middle" class="t">Clean</text>
+    <text x="689" y="218" text-anchor="middle" class="s">dedup on PK</text>
+    <text x="689" y="232" text-anchor="middle" class="s">SCD-2 agents</text>
+    <text x="689" y="246" text-anchor="middle" class="s">survivor borrowers</text>
+    <text x="689" y="260" text-anchor="middle" class="s">rejection_log</text>
+    <text x="689" y="306" text-anchor="middle" class="s">20_clean.sql</text>
+
+    <rect x="770" y="170" width="118" height="150" rx="8" class="gold"/>
+    <text x="829" y="196" text-anchor="middle" class="t">Golden</text>
+    <text x="829" y="218" text-anchor="middle" class="s">fct_payment</text>
+    <text x="829" y="232" text-anchor="middle" class="s">fct_touch · fct_ptp</text>
+    <text x="829" y="246" text-anchor="middle" class="s">account_month</text>
+    <text x="829" y="260" text-anchor="middle" class="s">(fixed cohort)</text>
+    <text x="829" y="306" text-anchor="middle" class="s">30_golden.sql</text>
+
+    <rect x="910" y="170" width="118" height="150" rx="8" class="lay"/>
+    <text x="969" y="196" text-anchor="middle" class="t">Feature</text>
+    <text x="969" y="218" text-anchor="middle" class="s">account-day</text>
+    <text x="969" y="232" text-anchor="middle" class="s">touch recency</text>
+    <text x="969" y="246" text-anchor="middle" class="s">DPD trajectory</text>
+    <text x="969" y="260" text-anchor="middle" class="s">channel response</text>
+
+    <rect x="1050" y="170" width="118" height="150" rx="8" class="lay"/>
+    <text x="1109" y="196" text-anchor="middle" class="t">Metrics</text>
+    <text x="1109" y="218" text-anchor="middle" class="s">governed KPIs</text>
+    <text x="1109" y="232" text-anchor="middle" class="s">per-day, fixed base</text>
+    <text x="1109" y="246" text-anchor="middle" class="s">with 95% CI</text>
+    <text x="1109" y="260" text-anchor="middle" class="s">versioned months</text>
+    <text x="1109" y="306" text-anchor="middle" class="s">40_metrics.sql</text>
+  </g>
+  <path d="M328,245 L348,245" class="ln" marker-end="url(#a)"/>
+  <path d="M468,245 L488,245" class="ln" marker-end="url(#a)"/>
+  <path d="M608,245 L628,245" class="ln" marker-end="url(#a)"/>
+  <path d="M748,245 L768,245" class="ln" marker-end="url(#a)"/>
+  <path d="M888,245 L908,245" class="ln" marker-end="url(#a)"/>
+  <path d="M1028,245 L1048,245" class="ln" marker-end="url(#a)"/>
+
+  <!-- DQ gate + dashboard -->
+  <rect x="1050" y="350" width="118" height="44" rx="6" class="gate"/>
+  <text x="1109" y="370" text-anchor="middle" class="t">DQ gate</text>
+  <text x="1109" y="385" text-anchor="middle" class="s">BLOCK / WARN</text>
+  <path d="M1109,320 L1109,348" class="ln" marker-end="url(#a)"/>
+  <rect x="1050" y="424" width="118" height="52" rx="6" class="src" stroke="#0b0b0b"/>
+  <text x="1109" y="446" text-anchor="middle" class="t">Reporting layer</text>
+  <text x="1109" y="462" text-anchor="middle" class="s">BI / dashboard</text>
+  <path d="M1109,394 L1109,422" class="ln" marker-end="url(#a)"/>
+  <text x="1180" y="414" class="s">fail → last</text>
+  <text x="1180" y="427" class="s">good snapshot</text>
+  <text x="1180" y="440" class="s">stays live</text>
+
+  <!-- experimentation loop -->
+  <rect x="770" y="350" width="258" height="70" rx="8" class="gold"/>
+  <text x="899" y="372" text-anchor="middle" class="t">Targeting &amp; experimentation</text>
+  <text x="899" y="390" text-anchor="middle" class="s">uplift model · random holdout assignment (10%)</text>
+  <text x="899" y="405" text-anchor="middle" class="s">contact policy: 08:00–19:00 IST, frequency caps</text>
+  <path d="M969,320 L969,348" class="ln" marker-end="url(#a)"/>
+  <path d="M770,405 L750,405 L750,526 L122,526 L122,480" stroke="#e34948" stroke-width="1.4" fill="none" stroke-dasharray="5 4" marker-end="url(#r)"/>
+  <text x="350" y="518" class="s" fill="#e34948">feedback: who to contact, when, which channel (+ holdout flag)</text>
+
+  <!-- ops band -->
+  <text x="32" y="556" class="h">RUNS ACROSS EVERY LAYER</text>
+  <rect x="32"  y="566" width="290" height="118" rx="8" class="ops"/>
+  <text x="46" y="588" class="t">Orchestration</text>
+  <text x="46" y="608" class="s">Daily DAG (Airflow / Step Functions)</text>
+  <text x="46" y="623" class="s">Incremental: reprocess partitions touched since</text>
+  <text x="46" y="638" class="s">last watermark (_ingested_at) → late data safe</text>
+  <text x="46" y="653" class="s">Backfill: idempotent delete+insert by partition</text>
+  <text x="46" y="668" class="s">Month frozen at month-end + 35 days</text>
+
+  <rect x="338" y="566" width="290" height="118" rx="8" class="ops"/>
+  <text x="352" y="588" class="t">Data quality</text>
+  <text x="352" y="608" class="s">PK uniqueness · ₹ reconciliation raw→golden</text>
+  <text x="352" y="623" class="s">orphan keys · timezone parse · code lists</text>
+  <text x="352" y="638" class="s">duplicate rate · PTP-before-due · calling hours</text>
+  <text x="352" y="653" class="s">results table → 70_dq_checks.sql</text>
+  <text x="352" y="668" class="s">restatements published with reason codes</text>
+
+  <rect x="644" y="566" width="290" height="118" rx="8" class="ops"/>
+  <text x="658" y="588" class="t">Monitoring &amp; anomaly detection</text>
+  <text x="658" y="608" class="s">Freshness by 06:00 IST · volume ±30% vs 28-d</text>
+  <text x="658" y="623" class="s">Code-mix drift (catches vendor code changes)</text>
+  <text x="658" y="638" class="s">Daily ₹ outside ±3σ weekday-adjusted band</text>
+  <text x="658" y="653" class="s">Holdout balance / sample-ratio mismatch</text>
+  <text x="658" y="668" class="s">Alerts → data owner, ops, compliance</text>
+
+  <rect x="950" y="566" width="298" height="118" rx="8" class="ops"/>
+  <text x="964" y="588" class="t">Lineage &amp; governance</text>
+  <text x="964" y="608" class="s">metric → SQL model → source file (dbt docs /</text>
+  <text x="964" y="623" class="s">OpenLineage) · metric definitions versioned</text>
+  <text x="964" y="638" class="s">Contracts owned by source teams</text>
+  <text x="964" y="653" class="s">PII (phone, email) masked after staging</text>
+  <text x="964" y="668" class="s">Access: analysts read Golden+, not Raw</text>
+</svg>
