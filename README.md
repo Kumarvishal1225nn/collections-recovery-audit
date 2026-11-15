@@ -8,6 +8,13 @@ An end-to-end analysis of 17 messy source systems from a collections platform. I
 3. **Several reported KPIs are distorted.** PTP-kept labels (~50%) vs cash (~4%); voicemail counted as contact; 500 payments recorded twice (₹2.59 Cr, 1.9% of cash). A status-based denominator would manufacture a +53% "improvement".
 4. **₹10 Cr:** no option is supported by evidence at that scale, and telephony is rejected outright. **Lead option: WhatsApp/digital**, run inside a 6-month randomised test (≈₹0.5–1.5 Cr). **Hold ≥ ₹8.5 Cr.** Enforce 08:00–19:00 IST calling now (54% of calls are outside it).
 
+## Executive dashboard (Tableau)
+![Collections Recovery Executive Dashboard](Collections_Recovery_Executive_Dashboard.png)
+
+Open [`Collections_Recovery_Executive_Dashboard.twbx`](Collections_Recovery_Executive_Dashboard.twbx) in Tableau Desktop or Tableau Reader for the interactive version (filters: Month, Geography, DPD bucket, Portfolio breakdown, Channel, Campaign view).
+
+> **Note on `outputs/`:** GitHub's web upload accepts at most 100 files at a time, so the `outputs/` folder (golden parquet, Tableau CSV extracts, validation, forensics and analysis tables, charts) is not in this repository. It is included in the submitted ZIP, and `python run_pipeline.py` regenerates it from the raw CSVs.
+
 ## Deliverables
 | # | Assignment deliverable | Location | Status |
 |---|---|---|---|
@@ -15,7 +22,7 @@ An end-to-end analysis of 17 messy source systems from a collections platform. I
 | 2 | Analysis notebook | `notebooks/analysis.ipynb` (executed); source `notebooks/build_notebook.py` | Done |
 | 3 | Golden dataset + pipeline | `outputs/golden/*.parquet`; `run_pipeline.py` rebuilds everything from the raw CSVs | Done |
 | 4 | Data quality report | `docs/data_quality_report.md`; source audit in `docs/01_data_validation.md` and `docs/02_source_table_audit.md` | Done |
-| 5 | Executive dashboard | **Not built yet.** Tableau-ready data and view specifications are in `outputs/tableau/` and `docs/tableau_handoff.md` | Pending (separate phase) |
+| 5 | Executive dashboard (Tableau) | [`Collections_Recovery_Executive_Dashboard.twbx`](Collections_Recovery_Executive_Dashboard.twbx) (packaged workbook, data included; open in Tableau Desktop/Reader) and [`Collections_Recovery_Executive_Dashboard.png`](Collections_Recovery_Executive_Dashboard.png) (screenshot) | Done |
 | 6 | Executive memo (2 pages) | `docs/executive_memo.pdf` (`.md` source) | Done |
 | 7 | Architecture diagram | `docs/architecture.png` / `.svg`; design in `docs/production_design.md` | Done |
 | + | ₹10 Cr decision model | `docs/investment_decision.md` | Done |
@@ -100,6 +107,5 @@ All 31 assumptions are listed with their sensitivity in `docs/assumptions_regist
 - Payment timestamps have no timezone (assumed IST; < 0.7% sensitivity).
 - No ingestion timestamp on payments, so late arrivals can't be detected.
 - `outstanding_amount` has no as-of date; 1,859 payers exceed it, so the *level* of the recovery rate is uncertain (its trend is not).
-- The executive dashboard is not built yet.
 
 Details: `docs/data_quality_report.md` §5.
